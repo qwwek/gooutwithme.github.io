@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, redirect
 import weather
+import db
+
 
 app = Flask(__name__)
 
+
 @app.route("/")
-def hello_world():
+def home():
     forecast = weather.getforecast('Oslo')
     return render_template('index.html', data="123")
 
@@ -28,11 +31,23 @@ def signup():
         email = request.form['email']
         password = request.form['password']
 
-        if len(email) == 0 or len(password) == 0:
-            return render_template('error.html')
-        
-        # TODO: save to DB
+        client_info = {
+            'email': email,
+            'password': password
+        }
+
+        query = {
+            "email": email
+        }
+
+        if db.get_data("clients", query) == None:
+
+            if len(email) == 0 or len(password) == 0:
+                return render_template('error.html')
+                
+            db.save_doc("clients", client_info)
 
         return redirect('/login')
-    else:
+    
+    elif request.method == 'GET':
         return render_template('signup.html')

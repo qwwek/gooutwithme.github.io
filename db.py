@@ -8,7 +8,7 @@ db = client[db_name]
 
 def save_doc(coll_name, doc):
     collection = db[coll_name]
-    collection.insert_one(post)
+    collection.insert_one(doc)
 
 def get_data(coll_name, query):
     collection = db[coll_name]
