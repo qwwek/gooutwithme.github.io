@@ -5,11 +5,13 @@ import db
 
 app = Flask(__name__)
 
+collection_clients = 'clients'
+collection_weather = 'weather'
+
 
 @app.route("/")
 def home():
-    forecast = weather.getforecast('Oslo')
-    return render_template('index.html', data="123")
+    return render_template('index.html')
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -18,9 +20,24 @@ def login():
         email = request.form['email']
         password = request.form['password']
         if len(email) == 0 or len(password) == 0:
-            return render_template('error.html')
+            return render_template('error.html'), 400
         
-        return render_template('login.html')
+        query = {
+            "email": email
+        }
+
+        client_inf = db.get_data(collection_clients, query)
+
+
+        if client_inf == None:
+            redirect('/signup')
+        else: 
+            if client_inf['password'] == password:
+                #TODO: redirect to resul
+                return redirect('/weather')
+            else:
+                return render_template('error.html'), 400
+            
     else:
         return render_template('login.html')
 
@@ -31,6 +48,9 @@ def signup():
         email = request.form['email']
         password = request.form['password']
 
+        if len(email) == 0 or len(password) == 0:
+            return render_template('error.html')
+
         client_info = {
             'email': email,
             'password': password
@@ -40,14 +60,41 @@ def signup():
             "email": email
         }
 
-        if db.get_data("clients", query) == None:
-
-            if len(email) == 0 or len(password) == 0:
-                return render_template('error.html')
-                
-            db.save_doc("clients", client_info)
+        if db.get_data(collection_clients, query) == None:
+            db.save_doc(collection_clients, client_info)
 
         return redirect('/login')
     
     elif request.method == 'GET':
         return render_template('signup.html')
+    
+
+@app.route("/weather", methods=['GET', 'POST'])
+def weather_forecast():
+
+    if request.method == 'GET':
+        return render_template('weather.html')
+    
+    elif request.method == 'POST':
+        city = request.form['city']
+        if len(city) == 0:
+            return render_template('error.html'), 400
+        
+        query = {
+            'city': city
+        }
+        
+        weather_info = weather.getforecast(city)
+        if weather_info != None:
+            weather_info["city"] = city
+            if db.get_data(collection_weather, query) != None:
+                db.del_doc(collection_weather, query)
+            db.save_doc(collection_weather, weather_info)
+            return render_template('weather.html', forecast=weather_info)
+        else:
+
+            weather_saved = db.get_data(collection_weather, query) 
+            if weather_saved != None:
+                return render_template('weather.html', forecast=weather_saved)
+            else:
+                return render_template('error.html'), 404

@@ -2,10 +2,14 @@ import pywttr
 
 
 def getforecast(city):
-    wttr = pywttr.Wttr(city)
-    weather = wttr.en()
+    try:
+        wttr = pywttr.Wttr(city)
+        weather = wttr.en()
+    except:
+        return None
 
-    print("get forecast")
+    if len(weather.weather) == 0:
+        return None
     
     forecast = {
        "temperature": weather.weather[0].hourly[0].temp_c,
@@ -17,5 +21,9 @@ def getforecast(city):
 
 
 if __name__ == '__main__':
-    location = 'Oslo'
+    location = 'KashaKasha'
     print(getforecast(location))
+
+    # Попробовтаь несущестсуюзий город
+    # + Возвращение пустого обьекта
+    # + Сайт лежит 
