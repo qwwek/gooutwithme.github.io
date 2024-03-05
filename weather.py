@@ -23,7 +23,4 @@ def getforecast(city):
 if __name__ == '__main__':
     location = 'KashaKasha'
     print(getforecast(location))
-
-    # Попробовтаь несущестсуюзий город
-    # + Возвращение пустого обьекта
-    # + Сайт лежит 
+    
