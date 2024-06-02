@@ -1,0 +1,14 @@
+name: Hello World Workflow
+
+on: 
+  push:
+    branches: [ master ]
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Echo Hello World
+      run: echo "hello world"
+
