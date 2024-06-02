@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 
-client = MongoClient('localhost',27017)
+client = MongoClient('mongodb', 27017)
 db_name = 'weather'
 db = client[db_name]
 
@@ -18,15 +18,3 @@ def get_data(coll_name, query):
 def del_doc(coll_name, query):
     collection = db[coll_name]
     collection.delete_one(query)
-
-
-if __name__ == '__main__':
-    post = {
-        "author": "Mike",
-        "text": "My first blog post!",
-        "tags": ["mongodb", "python", "pymongo"],
-        "date": "datetime.datetime.now(tz=datetime.timezone.utc),"
-    }
-
-    #save_doc(post)
-    print(get_data('auth', {'author': 'Mike'}))

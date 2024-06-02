@@ -28,18 +28,18 @@ def login():
 
         client_inf = db.get_data(collection_clients, query)
 
-
         if client_inf == None:
-            redirect('/signup')
+            return redirect('/signup')  # Return the redirect response
         else: 
             if client_inf['password'] == password:
-                #TODO: redirect to resul
+                # TODO: redirect to result
                 return redirect('/weather')
             else:
                 return render_template('error.html'), 400
             
     else:
         return render_template('login.html')
+
 
 
 @app.route("/signup", methods=['GET', 'POST'])

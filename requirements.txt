@@ -1,3 +1,6 @@
 flask
 pywttr
 pymongo
+pytest
+Flask-Testing
+mongomock
